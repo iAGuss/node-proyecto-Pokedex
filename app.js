@@ -10,7 +10,8 @@ const app = express();
 const PORT = 3010;
 app.use(cors());
 app.use(bodyParser.json());
-app.use("/", pokemonruta, authRouter);
+app.use("/pokemon", pokemonruta);
+app.use("/", authRouter);
 
 app.listen(PORT, () =>
   console.log(`Server listening in http://localhost:${PORT}`)

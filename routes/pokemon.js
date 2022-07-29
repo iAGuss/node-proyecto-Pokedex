@@ -4,7 +4,7 @@ const { listaPokemones } = require("../controllers/pokemon");
 const { getPokemon } = require("../controllers/pokemon");
 const { addpokemon } = require("../controllers/pokemon");
 router.get("/", listaPokemones);
-router.get("/getpokemon", getPokemon);
-router.post("/addpokemon", addpokemon);
+router.get("/:nombre", getPokemon);
+router.post("/", addpokemon);
 
 module.exports = router;

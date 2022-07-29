@@ -4,16 +4,22 @@ const client = new Pool({
   database: "Pokemones",
   password: "1234",
 });
-
+//--------------------------------------------------------------traer la lista completa para usar en info contendor?--------------------------------------
 exports.listaPokemones = async (req, res) => {
-  const { rows } = await client.query("SELECT*FROM public.pokemones");
+  const { rows } = await client.query(
+    "SELECT  number,name,color,imagen FROM pokemones"
+  );
   return res.send(rows);
 };
-
+//"SELECT pokemones.number,pokemones.name,pokemones.weight,pokemones.height,pokemones.color, pokemones.description,pokemones.imagen, stats.hp, stats.atk,stats.def, stats.spd,stats.satk,stats.sdef,moves.name, moves.name2, tipos.type, tipos.type2, tipos.typecolor1, tipos.typecolor2 FROM public.pokemones JOIN stats on stats.statsid = pokemones.statsid JOIN moves on moves.idpokemon = pokemones.number JOIN tipos on tipos.idpokemon =pokemones.number"
 //------------------------------------------------------------Mostrar pokemon segun cual clickes-----------------------------------------------------------
 exports.getPokemon = async (req, res) => {
-  const { rows } = await client.query("SELECT*FROM public.pokemones");
-  return res.send(rows);
+  const { nombre } = req.params;
+  const { rows } = await client.query(
+    "SELECT pokemones.number,pokemones.name,pokemones.weight,pokemones.height,pokemones.color, pokemones.description,pokemones.imagen, stats.hp, stats.atk,stats.def, stats.spd,stats.satk,stats.sdef,moves.move, moves.move2, tipos.type, tipos.type2, tipos.typecolor1, tipos.typecolor2 FROM public.pokemones JOIN stats on stats.statsid = pokemones.statsid JOIN moves on moves.idpokemon = pokemones.number JOIN tipos on tipos.idpokemon =pokemones.number WHERE REPLACE(lower(pokemones.name), ' ', '') like $1",
+    [nombre.toLowerCase()]
+  );
+  return res.send(rows[0]);
 };
 
 //----------------------------------------------agregar Pokemon------------------------------------------------------------------------------------------
