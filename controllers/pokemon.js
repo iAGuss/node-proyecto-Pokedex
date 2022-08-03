@@ -7,7 +7,7 @@ const client = new Pool({
 //--------------------------------------------------------------traer la lista completa para usar en info contendor?--------------------------------------
 exports.listaPokemones = async (req, res) => {
   const { rows } = await client.query(
-    "SELECT  number,name,color,imagen FROM pokemones"
+    "SELECT  number,name,color,imagen FROM pokemones WHERE (pokemones.borrado =false) order by number"
   );
   return res.send(rows);
 };
@@ -21,6 +21,18 @@ exports.getPokemon = async (req, res) => {
   );
   return res.send(rows[0]);
 };
+//--------------------------------------------------------------borrado de pokemon----------------------------------------------------------------
+exports.deletePokemon = async (req, res) => {
+  const { nombre } = req.params;
+  const { rows } = await client.query(
+    "UPDATE pokemones SET borrado =true WHERE REPLACE(lower(name), ' ', '') like $1",
+    [nombre.toLowerCase()]
+  );
+  return res.send(rows[0]);
+};
+// UPDATE public.pokemones
+// 	SET "number"=?, name=?, weight=?, height=?, color=?, description=?, statsid=?, imagen=?, borrado=?
+// 	WHERE <condition>;
 
 //----------------------------------------------agregar Pokemon------------------------------------------------------------------------------------------
 exports.addpokemon = async (req, res) => {
@@ -62,8 +74,8 @@ exports.addpokemon = async (req, res) => {
   const idpokemon = pokemon[0].number;
   //-----------------------------------------insert moves---------------------------------------------------
   await client.query(
-    "INSERT INTO public.moves (name,name2,idpokemon) values ($1, $2,$3) returning id",
-    [body.name, body.name2, idpokemon]
+    "INSERT INTO public.moves (move,move2,idpokemon) values ($1, $2,$3) returning id",
+    [body.move1, body.move2, idpokemon]
   );
 
   //---------------------------------------insert types------------------------------------------------------
@@ -71,8 +83,6 @@ exports.addpokemon = async (req, res) => {
     "INSERT INTO public.tipos (type,type2,typecolor1,typecolor2,idpokemon) values ($1, $2,$3,$4,$5) returning id",
     [body.type, body.type2, body.typecolor1, body.typecolor2, idpokemon]
   );
-
-  //---------------------------------------insert all -------------------------------------------------
 
   return res.json({ success: true, newPokemon });
 };

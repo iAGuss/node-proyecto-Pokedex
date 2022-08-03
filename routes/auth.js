@@ -5,4 +5,3 @@ const { loginUsuario, registrarUsuario } = require("../controllers/auth");
 router.post("/login", loginUsuario);
 
 router.post("/registrar", registrarUsuario);
-
