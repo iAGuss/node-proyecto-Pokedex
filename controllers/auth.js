@@ -42,11 +42,11 @@ exports.registrarUsuario = async (req, res) => {
   const password = await bcrypt.hash(req.body.password, salt);
 
   const newUser = {
-    nombre: req.body.nombre,
+    nombre: req.body.name,
     mail: req.body.mail,
     password: password,
   };
- 
+
   await client.query(
     "INSERT INTO public.usuarios (nombre,mail,password) values ($1, $2, $3) ",
     [newUser.nombre, newUser.mail, newUser.password]

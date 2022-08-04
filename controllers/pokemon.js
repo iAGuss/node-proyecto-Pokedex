@@ -41,8 +41,8 @@ exports.addpokemon = async (req, res) => {
     name: body.name,
     height: body.height,
     weight: body.weight,
-    // type1color: body.type1color,
-    // type2color: body.type2color,
+    type1color: body.type1color,
+    type2color: body.type2color,
     description: body.description,
     number: body.number,
     color: body.color,
@@ -81,7 +81,7 @@ exports.addpokemon = async (req, res) => {
   //---------------------------------------insert types------------------------------------------------------
   await client.query(
     "INSERT INTO public.tipos (type,type2,typecolor1,typecolor2,idpokemon) values ($1, $2,$3,$4,$5) returning id",
-    [body.type, body.type2, body.typecolor1, body.typecolor2, idpokemon]
+    [body.type1, body.type2, body.typecolor1, body.typecolor2, idpokemon]
   );
 
   return res.json({ success: true, newPokemon });
